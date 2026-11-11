@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Budget BD</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <h1 id="title">Wedding Budget BD</h1>
+    <p id="subtitle" class="subtitle"></p>
+    <button id="langBtn" class="btn ghost" type="button">Bangla</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="dash" id="tab-dash" type="button">Dashboard</button>
+    <button class="tab" data-tab="cats" id="tab-cats" type="button">Categories</button>
+    <button class="tab" data-tab="exp" id="tab-exp" type="button">Expenses</button>
+    <button class="tab" data-tab="ven" id="tab-ven" type="button">Vendors</button>
+    <button class="tab" data-tab="data" id="tab-data" type="button">Data</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <section class="panel" id="panel-dash">
+    <form id="settingsForm" class="card settings" novalidate>
+      <div class="field">
+        <label for="budgetInput" data-i18n="totalBudget">Total wedding budget</label>
+        <input id="budgetInput" type="number" min="0" step="1" inputmode="decimal" placeholder="1000000">
+      </div>
+      <div class="field">
+        <label for="guestsInput" data-i18n="guests">Expected guests</label>
+        <input id="guestsInput" type="number" min="0" step="1" inputmode="numeric" placeholder="500">
+      </div>
+      <button class="btn primary" type="submit" data-i18n="saveSettings">Save settings</button>
+      <p class="hint" data-i18n="budgetHint"></p>
+      <p class="okmsg" id="settingsOk" hidden></p>
+      <p class="err" id="settingsErr" hidden></p>
+    </form>
+
+    <div id="overBanner" class="banner danger" hidden></div>
+
+    <div class="stats">
+      <div class="stat"><span class="stat-label" data-i18n="dashSpent">Spent (paid)</span><strong id="statPaid">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashPlanned">Planned</span><strong id="statPlanned">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashCommitted">Total committed</span><strong id="statCommitted">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashRemaining">Remaining</span><strong id="statRemaining">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashUsed">of budget used</span><strong id="statPct">0%</strong>
+        <div class="bar"><div class="bar-fill" id="pctBar" style="width:0%"></div></div>
+      </div>
+      <div class="stat"><span class="stat-label" data-i18n="dashPerGuest">Cost per guest (committed)</span><strong id="statPerGuest">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashPerGuestPaid">Cost per guest (paid)</span><strong id="statPerGuestPaid">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashVendors">Vendor contracts</span><strong id="statVendorContract">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashVendorPaid">Paid to vendors</span><strong id="statVendorPaid">&#2547;0</strong></div>
+      <div class="stat"><span class="stat-label" data-i18n="dashVendorDue">Due to vendors</span><strong id="statVendorDue">&#2547;0</strong></div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="dashChartTitle">Spending by category</h2>
+      <div id="chartWrap"></div>
+      <p class="empty" id="chartEmpty" hidden></p>
+      <p class="empty" id="dashEmpty" hidden></p>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="panel" id="panel-cats" hidden>
+    <div class="card">
+      <h2 data-i18n="catTitle">Category budgets</h2>
+      <p class="hint" data-i18n="catHint"></p>
+      <div id="catList"></div>
+      <p class="err" id="capErr" hidden></p>
+    </div>
+  </section>
+
+  <!-- EXPENSES -->
+  <section class="panel" id="panel-exp" hidden>
+    <div class="card">
+      <h2 data-i18n="expAdd">Add expense</h2>
+      <form id="expForm" novalidate>
+        <div class="grid2">
+          <div class="field">
+            <label for="expDesc" data-i18n="expDesc">Description</label>
+            <input id="expDesc" type="text" maxlength="80" placeholder="Hall booking advance">
+          </div>
+          <div class="field">
+            <label for="expCat" data-i18n="expCat">Category</label>
+            <select id="expCat"></select>
+          </div>
+          <div class="field">
+            <label for="expAmount" data-i18n="expAmount">Amount (&#2547;)</label>
+            <input id="expAmount" type="number" min="1" step="1" inputmode="decimal" placeholder="50000">
+          </div>
+          <div class="field">
+            <label for="expDate" data-i18n="expDate">Date</label>
+            <input id="expDate" type="date">
+          </div>
+          <div class="field">
+            <label for="expVendor" data-i18n="expVendor">Vendor (optional)</label>
+            <input id="expVendor" type="text" maxlength="60" placeholder="Community centre">
+          </div>
+          <div class="field">
+            <label for="expStatus" data-i18n="expStatus">Status</label>
+            <select id="expStatus">
+              <option value="paid">Paid</option>
+              <option value="planned">Planned</option>
+            </select>
+          </div>
+        </div>
+        <p class="err" id="expErr" hidden></p>
+        <button class="btn primary" type="submit" id="expSubmit">Add expense</button>
+        <button class="btn ghost" type="button" id="expCancel" hidden>Cancel edit</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2 data-i18n="expTitle">Expenses</h2>
+      <div class="field inline">
+        <label for="expFilter" data-i18n="expCat">Category</label>
+        <select id="expFilter"><option value="">All</option></select>
+      </div>
+      <ul id="expList" class="list"></ul>
+      <p class="empty" id="expEmpty" hidden></p>
+    </div>
+  </section>
+
+  <!-- VENDORS -->
+  <section class="panel" id="panel-ven" hidden>
+    <div class="card">
+      <h2 data-i18n="venAdd">Add vendor</h2>
+      <p class="hint" data-i18n="venHint"></p>
+      <form id="venForm" novalidate>
+        <div class="grid2">
+          <div class="field">
+            <label for="venName" data-i18n="venName">Vendor name</label>
+            <input id="venName" type="text" maxlength="60" placeholder="Dream Decor">
+          </div>
+          <div class="field">
+            <label for="venCat" data-i18n="expCat">Category</label>
+            <select id="venCat"></select>
+          </div>
+          <div class="field">
+            <label for="venContract" data-i18n="venContract">Contract total (&#2547;)</label>
+            <input id="venContract" type="number" min="1" step="1" inputmode="decimal" placeholder="150000">
+          </div>
+          <div class="field">
+            <label for="venPaid" data-i18n="venPaid">Paid so far (&#2547;)</label>
+            <input id="venPaid" type="number" min="0" step="1" inputmode="decimal" placeholder="50000">
+          </div>
+        </div>
+        <p class="err" id="venErr" hidden></p>
+        <button class="btn primary" type="submit" data-i18n="venAdd">Add vendor</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2 data-i18n="venTitle">Vendors &amp; payments</h2>
+      <ul id="venList" class="list"></ul>
+      <p class="empty" id="venEmpty" hidden></p>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section class="panel" id="panel-data" hidden>
+    <div class="card">
+      <h2 data-i18n="dataTitle">Your data</h2>
+      <p class="hint" data-i18n="dataHint"></p>
+      <button class="btn" type="button" id="exportBtn">Export JSON</button>
+      <textarea id="exportText" rows="6" readonly placeholder="Exported JSON appears here"></textarea>
+      <label for="importText">JSON</label>
+      <textarea id="importText" rows="6" placeholder='{"app":"wedding-budget-bd", ...}'></textarea>
+      <p class="err" id="importFail" hidden></p>
+      <p class="okmsg" id="importOk" hidden></p>
+      <button class="btn" type="button" id="importBtn">Import JSON</button>
+      <hr>
+      <label for="eraseInput" data-i18n="eraseWord">Type DELETE to confirm</label>
+      <input id="eraseInput" type="text" autocomplete="off" placeholder="DELETE">
+      <p class="err" id="eraseWrong" hidden></p>
+      <p class="okmsg" id="erasedMsg" hidden></p>
+      <button class="btn danger" type="button" id="eraseBtn">Erase all data</button>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p id="footerText"></p>
+</footer>
+
+<script src="logic.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
